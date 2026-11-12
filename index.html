@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¡Feliz Cumpleaños!</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden}
+  body{
+    font-family:'Poppins',sans-serif;color:#fff;text-align:center;
+    background:radial-gradient(circle at 50% 120%,#ff7eb3 0%,#7b2ff7 45%,#1b0b4a 100%);
+  }
+  #confeti{position:fixed;inset:0;z-index:5;pointer-events:none}
+  #globos{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .globo{position:absolute;bottom:-80px;animation:sube linear forwards}
+  @keyframes sube{to{transform:translateY(-120vh) translateX(var(--dx))}}
+
+  .estrellas{position:fixed;inset:0;z-index:0;
+    background-image:
+      radial-gradient(2px 2px at 20px 30px,#fff,transparent),
+      radial-gradient(2px 2px at 120px 90px,#ffe9b0,transparent),
+      radial-gradient(1.5px 1.5px at 220px 50px,#fff,transparent),
+      radial-gradient(2px 2px at 300px 140px,#fff,transparent);
+    background-size:340px 180px;opacity:.6;animation:brillo 3s infinite alternate}
+  @keyframes brillo{from{opacity:.25}to{opacity:.8}}
+
+  #intro{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;background:rgba(20,5,60,.85);gap:20px}
+  #intro .regalo{font-size:110px;animation:salto 1.2s infinite}
+  @keyframes salto{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+  button{
+    font-family:inherit;font-size:22px;font-weight:600;color:#3a1170;border:0;cursor:pointer;
+    padding:16px 38px;border-radius:50px;background:linear-gradient(45deg,#ffd27a,#fff2c4);
+    box-shadow:0 8px 25px rgba(0,0,0,.35);transition:transform .2s}
+  button:hover{transform:scale(1.07)}
+
+  /* Botón de música */
+  #btnMusica{position:fixed;top:14px;right:14px;z-index:30;display:none;
+    width:52px;height:52px;padding:0;font-size:24px;border-radius:50%}
+
+  /* Escenario */
+  #escenario{position:relative;z-index:3;height:100%;display:none;flex-direction:column;
+    align-items:center;padding:20px;overflow-y:auto}
+  #escenario > :first-child{margin-top:auto}
+  #escenario > :last-child{margin-bottom:auto}
+  .pre{font-size:clamp(18px,3vw,28px);letter-spacing:6px;color:#ffe9b0;opacity:0;
+    animation:aparece 1s .2s forwards}
+  #nombre{
+    font-family:'Pacifico',cursive;font-size:clamp(70px,20vw,260px);line-height:1.1;
+    margin:10px 0;transform:scale(.04);transform-origin:center;
+    text-shadow:0 0 25px rgba(255,255,255,.6),0 8px 30px rgba(0,0,0,.4);
+  }
+  #nombre.crece{animation:crece 4.5s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes crece{0%{transform:scale(.04)}85%{transform:scale(1.08)}100%{transform:scale(1)}}
+  #nombre span{display:inline-block}
+  #nombre.onda span{animation:onda 1.6s ease-in-out infinite}
+  @keyframes onda{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+  #feliz{font-size:clamp(28px,6vw,70px);font-weight:600;letter-spacing:3px;margin:0;
+    opacity:0;transform:scale(.3)}
+  #feliz.ver{animation:pop 1s forwards}
+  @keyframes pop{60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+
+  #mensaje{max-width:700px;font-size:clamp(16px,2.6vw,26px);margin:18px 0 0;line-height:1.5;
+    color:#ffe9b0;opacity:0;transition:opacity 1.5s}
+  #mensaje.ver{opacity:1}
+
+  /* Galería */
+  #galeria{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:20px;max-width:800px}
+  #galeria img{
+    width:clamp(55px,12vw,100px);height:clamp(55px,12vw,100px);
+    object-fit:cover;object-position:center top;border-radius:50%;cursor:pointer;
+    border:3px solid #ffd27a;box-shadow:0 0 18px rgba(255,210,122,.7);
+    opacity:0;transform:scale(.2) rotate(-20deg);
+    transition:opacity .6s, transform .8s cubic-bezier(.3,1.6,.5,1);
+  }
+  #galeria img.ver{opacity:1;transform:scale(1) rotate(0)}
+  #galeria img.ver:hover{transform:scale(1.15)}
+
+  #repetir{margin-top:28px;font-size:18px;padding:12px 28px;opacity:0;pointer-events:none;transition:opacity 1s}
+  #repetir.ver{opacity:1;pointer-events:auto}
+  @keyframes aparece{to{opacity:1}}
+
+  /* Visor de foto ampliada */
+  #visor{position:fixed;inset:0;z-index:50;background:rgba(10,0,30,.93);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .3s}
+  #visor.ver{opacity:1;pointer-events:auto}
+  #vImg{max-width:92vw;max-height:82vh;border-radius:16px;border:4px solid #ffd27a;
+    box-shadow:0 0 50px rgba(255,210,122,.6);object-fit:contain}
+  #visor button{position:absolute;width:52px;height:52px;padding:0;font-size:28px;
+    border-radius:50%;color:#3a1170;display:flex;align-items:center;justify-content:center}
+  #vCerrar{top:14px;right:14px}
+  #vPrev{left:12px;top:50%;margin-top:-26px}
+  #vNext{right:12px;top:50%;margin-top:-26px}
+  #vCont{position:absolute;bottom:18px;left:0;right:0;color:#ffe9b0;font-size:18px}
+</style>
+</head>
+<body>
+
+<div class="estrellas"></div>
+<div id="globos"></div>
+<canvas id="confeti"></canvas>
+
+<audio id="musica" src="musica.mp3" loop preload="auto"></audio>
+<button id="btnMusica" title="Silenciar / activar música">🔊</button>
+
+<div id="intro">
+  <div class="regalo">🎁</div>
+  <button id="btnAbrir">Abrir sorpresa</button>
+</div>
+
+<div id="escenario">
+  <div class="pre">HOY ES UN DÍA ESPECIAL PARA</div>
+  <div id="nombre"></div>
+  <p id="feliz">🎉 ¡FELIZ CUMPLEAÑOS! 🎂</p>
+  <p id="mensaje"></p>
+  <div id="galeria"></div>
+  <button id="repetir">🔁 Ver otra vez</button>
+</div>
+
+<!-- Visor de fotos -->
+<div id="visor">
+  <button id="vCerrar">✕</button>
+  <button id="vPrev">‹</button>
+  <img id="vImg" alt="Foto ampliada">
+  <button id="vNext">›</button>
+  <div id="vCont"></div>
+</div>
+
+<script>
+/* ====== PERSONALIZA AQUÍ ====== */
+const NOMBRE  = "Aurelio";
+const MENSAJE = "Hermano, gracias por ser mi compañero de toda la vida. Que Dios te llene de salud, paz y bendiciones. ¡Te quiero mucho! 🙏❤️";
+const FOTOS = [
+  "fotos/aurelio1.jpg",
+  "fotos/aurelio2.jpg",
+  "fotos/aurelio3.jpg",
+  "fotos/aurelio4.jpg",
+  "fotos/aurelio5.jpg",
+  "fotos/aurelio6.jpg"
+];
+const VOLUMEN = 0.7;   // de 0 (silencio) a 1 (máximo)
+/* =============================== */
+
+const $ = id => document.getElementById(id);
+const colores = ["#ffd27a","#ffffff","#ffb3d9","#a5f3fc","#fff2c4"];
+let lluvia, timers = [];
+
+/* ---------- Música ---------- */
+const audio = $("musica");
+function iniciarMusica(){
+  audio.volume = 0;
+  audio.play().then(()=>{
+    let v = 0;
+    const f = setInterval(()=>{
+      v += 0.05; audio.volume = Math.min(v, VOLUMEN);
+      if(v >= VOLUMEN) clearInterval(f);
+    }, 200);
+  }).catch(()=>{ /* si no hay archivo, sigue sin música */ });
+  $("btnMusica").style.display = "block";
+}
+$("btnMusica").onclick = () => {
+  audio.muted = !audio.muted;
+  $("btnMusica").textContent = audio.muted ? "🔇" : "🔊";
+};
+
+/* ---------- Confeti ---------- */
+const cv = $("confeti"), ctx = cv.getContext("2d");
+let piezas = [];
+function ajusta(){cv.width = innerWidth; cv.height = innerHeight}
+addEventListener("resize", ajusta); ajusta();
+
+function explosion(x, y, n){
+  for(let i=0;i<n;i++){
+    const a = Math.random()*Math.PI*2, v = 4+Math.random()*9;
+    piezas.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,
+      w:6+Math.random()*7,h:10+Math.random()*8,r:Math.random()*6,
+      vr:(Math.random()-.5)*.4,c:`hsl(${Math.random()*360},90%,60%)`,vida:200+Math.random()*100});
+  }
+}
+function caer(){
+  piezas.push({x:Math.random()*cv.width,y:-20,vx:(Math.random()-.5)*2,vy:2+Math.random()*3,
+    w:6+Math.random()*6,h:10+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.3,
+    c:`hsl(${Math.random()*360},90%,60%)`,vida:400});
+}
+(function loop(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  piezas = piezas.filter(p => p.vida-- > 0 && p.y < cv.height+30);
+  piezas.forEach(p=>{
+    p.vy += .12; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+    ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+  });
+  requestAnimationFrame(loop);
+})();
+
+/* ---------- Globos ---------- */
+function globo(){
+  const g = document.createElement("div");
+  g.className = "globo";
+  g.textContent = ["🎈","🎈","🎈","🎊","⭐"][Math.floor(Math.random()*5)];
+  g.style.left = Math.random()*100 + "vw";
+  g.style.fontSize = (30+Math.random()*50) + "px";
+  g.style.setProperty("--dx", (Math.random()*160-80) + "px");
+  g.style.animationDuration = (6+Math.random()*6) + "s";
+  $("globos").appendChild(g);
+  setTimeout(()=>g.remove(), 13000);
+}
+
+/* ---------- Visor de fotos ---------- */
+let idx = 0;
+function mostrarFoto(){
+  $("vImg").src = FOTOS[idx];
+  $("vCont").textContent = (idx+1) + " / " + FOTOS.length;
+}
+function abrirVisor(i){ idx = i; mostrarFoto(); $("visor").classList.add("ver"); }
+function cerrarVisor(){ $("visor").classList.remove("ver"); }
+function mover(d){ idx = (idx + d + FOTOS.length) % FOTOS.length; mostrarFoto(); }
+
+$("galeria").onclick = e => {
+  if(e.target.tagName === "IMG") abrirVisor(+e.target.dataset.i);
+};
+$("vCerrar").onclick = cerrarVisor;
+$("vPrev").onclick = () => mover(-1);
+$("vNext").onclick = () => mover(1);
+$("visor").onclick = e => { if(e.target === $("visor")) cerrarVisor(); };
+addEventListener("keydown", e => {
+  if(!$("visor").classList.contains("ver")) return;
+  if(e.key === "Escape") cerrarVisor();
+  if(e.key === "ArrowLeft") mover(-1);
+  if(e.key === "ArrowRight") mover(1);
+});
+let tx = 0;
+$("visor").addEventListener("touchstart", e => tx = e.touches[0].clientX);
+$("visor").addEventListener("touchend", e => {
+  const d = e.changedTouches[0].clientX - tx;
+  if(Math.abs(d) > 50) mover(d > 0 ? -1 : 1);
+});
+
+/* ---------- Secuencia ---------- */
+function espera(fn, ms){ timers.push(setTimeout(fn, ms)) }
+
+function iniciar(){
+  timers.forEach(clearTimeout); timers = []; clearInterval(lluvia);
+  piezas = [];
+  $("nombre").className = ""; $("feliz").className = ""; $("mensaje").className = "";
+  $("repetir").className = "";
+  $("nombre").style.transform = "scale(.04)";
+
+  $("nombre").innerHTML = [...NOMBRE].map((l,i)=>
+    `<span style="color:${colores[i%colores.length]};animation-delay:${i*.12}s">${l}</span>`).join("");
+  $("mensaje").textContent = MENSAJE;
+
+  $("galeria").innerHTML = FOTOS.map((f,i)=>`<img src="${f}" data-i="${i}" alt="Foto ${i+1}">`).join("");
+  [...$("galeria").children].forEach((im,i)=>espera(()=>im.classList.add("ver"), 6800 + i*500));
+
+  void $("nombre").offsetWidth;
+  $("nombre").classList.add("crece");
+
+  for(let i=0;i<6;i++) espera(globo, i*700);
+
+  espera(()=>{
+    $("nombre").classList.add("onda");
+    $("feliz").classList.add("ver");
+    explosion(innerWidth/2, innerHeight/2.2, 220);
+    explosion(innerWidth*.2, innerHeight*.5, 120);
+    explosion(innerWidth*.8, innerHeight*.5, 120);
+    lluvia = setInterval(()=>{caer();caer();globo()}, 350);
+  }, 4600);
+
+  espera(()=>$("mensaje").classList.add("ver"), 6000);
+  espera(()=>$("repetir").classList.add("ver"), 7000 + FOTOS.length*500);
+}
+
+$("btnAbrir").onclick = () => {
+  $("intro").style.display = "none";
+  $("escenario").style.display = "flex";
+  iniciarMusica();      // aquí arranca la música (el clic lo permite)
+  iniciar();
+};
+$("repetir").onclick = iniciar;   // la música sigue sonando sin reiniciarse
+</script>
+</body>
+</html>
