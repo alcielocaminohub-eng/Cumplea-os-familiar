@@ -96,6 +96,44 @@
   #vPrev{left:12px;top:50%;margin-top:-26px}
   #vNext{right:12px;top:50%;margin-top:-26px}
   #vCont{position:absolute;bottom:18px;left:0;right:0;color:#ffe9b0;font-size:18px}
+
+ /* Indicación para las fotos */
+#avisoFotos {
+  margin: 20px 0 0;
+  color: #ffe9b0;
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity .6s;
+}
+
+/* Aparece cuando se muestra el mensaje */
+#mensaje.ver + #avisoFotos {
+  opacity: 1;
+}
+
+#avisoFotos .mano {
+  display: inline-block;
+  animation: apuntar 1s ease-in-out infinite;
+}
+
+@keyframes apuntar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* Botón de WhatsApp */
+#volverGrupo {
+  display: inline-block;
+  margin: 18px 0 24px;
+  padding: 12px 22px;
+  border-radius: 50px;
+  background: #25d366;
+  color: #06351b;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+}
 </style>
 </head>
 <body>
@@ -117,8 +155,22 @@
   <div id="nombre"></div>
   <p id="feliz">🎉 ¡FELIZ CUMPLEAÑOS! 🎂</p>
   <p id="mensaje"></p>
-  <div id="galeria"></div>
-  <button id="repetir">🔁 Ver otra vez</button>
+
+<p id="avisoFotos">
+  <span class="mano">👇</span>
+  ¡Clic aquí! Toca una foto para verla más grande
+  <span class="mano">👇</span>
+</p>
+
+<div id="galeria"></div>
+
+<button id="repetir">🔁 Ver otra vez</button>
+
+<a id="volverGrupo"
+   href="https://chat.whatsapp.com/LTAJy9JvbGM3AvM2aKLkUm?s=cl&p=a&mlu=4&ilr=4&iam=2"
+   onclick="document.getElementById('musica').pause()">
+  📲 Volver al grupo de WhatsApp
+</a>
 </div>
 
 <!-- Visor de fotos -->
@@ -133,7 +185,7 @@
 <script>
 /* ====== PERSONALIZA AQUÍ ====== */
 const NOMBRE  = "Aurelio";
-const MENSAJE = "Hermano, gracias por ser mi compañero de toda la vida. Que Dios te llene de salud, paz y bendiciones. ¡Te quiero mucho! 🙏❤️";
+const MENSAJE = "Hermano, gracias por ser parte de nuestra familia y en la vida. Dios colme todo el deseo de tu corazón y te conceda salud, paz y bendiciones. ¡Te queremos mucho! anhela sabiduría y la hallaras te dedico Proverbios 2:1-10! 🙏❤️";
 const FOTOS = [
   "foto1.jpg",
   "foto2.jpg",
